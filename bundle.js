@@ -1,103 +1,145 @@
 
+/*-------------------------------------------------------*/
+/*--------  hosting: kindhearted-army.surge.sh ----------*/
+/* Repository:  https://github.com/themafia98/map-course */
+/* -------------------Pavel Petrovich------------------- */
+/*------------------------------------------------------*/
 
-import map from './modules/config.js';
-import openStreetMap from './modules/openStreetMap.js';
-import bingMap from './modules/bingMap.js';
-import xyzMap from './modules/xyz.js';
-import arc from './modules/arcGIS.js';
-import wmsMap from './modules/wms.js';
-import stamenMap from './modules/stamen.js';
+
+import OpenStreetMap from './modules/openStreetMap.js';
+import BingMap from './modules/bingMap.js';
+import XyzMap from './modules/xyz.js';
+import Arc from './modules/arcGIS.js';
+import WmsMap from './modules/wms.js';
+import StamenMap from './modules/stamen.js';
 
 
 /* ---INIT--- */
-
-let config = map(4188426.7147939987,7508764.236877314,12,'map');
-document.querySelector('.ol-attribution').remove();
-
+let ctx = null;
+let currentCoords = null;
+let canvas = null;
 
     function openStreet(){
-        let streetMap = new openStreetMap();
-        config.map.addLayer(streetMap.init());
-        config.map.setView(config.view);
+        let streetMap = new OpenStreetMap(12,'map','EPSG:4326');
+        streetMap.map.addLayer(streetMap.init());
+        streetMap.map.setView(streetMap.view);
+        currentCoords = createOverlay();
+        streetMap.map.addOverlay(currentCoords);
+        eventsOpenLayers(streetMap.map,currentCoords);
     }
 
     function bing(){
-        let bing = new bingMap();
-        config.map.addLayer(bing.init());
-        config.map.setView(config.view);
+        let bing = new BingMap(12,'map','EPSG:4326');
+        bing.map.addLayer(bing.init());
+        bing.map.setView(bing.view);
+        currentCoords = createOverlay();
+        bing.map.addOverlay(currentCoords);
+        eventsOpenLayers(bing.map,currentCoords);
     }
 
     function xyz(){
-        let xyz = new xyzMap();
-        config.map.addLayer(xyz.init());
-        config.map.setView(config.view);
+        let xyz = new XyzMap(12,'map','EPSG:4326');
+        xyz.map.addLayer(xyz.init());
+        xyz.map.setView(xyz.view);
+        currentCoords = createOverlay();
+        xyz.map.addOverlay(currentCoords);
+        eventsOpenLayers(xyz.map,currentCoords);
     }
 
     function arcGIS(map = '/NatGeo_World_Map/MapServer'){
-        
-        let arcGis = new arc();
-        config.map.addLayer(arcGis.init(map));
-        config.map.setView(config.view);
+        let arcGis = new Arc(12,'map','EPSG:4326');
+        let mapCtx = arcGis.init(map);
+        arcGis.map.addLayer(mapCtx);
+        arcGis.map.setView(arcGis.view);
+        currentCoords = createOverlay();
+        arcGis.map.addOverlay(currentCoords);
+        eventsOpenLayers(arcGis.map,currentCoords);
+        arcGis.swipe(mapCtx,arcGis.map);
     }
 
     function wms(){
-
-        let wms = new wmsMap();
-        config.map.addLayer(wms.init());
-        config.map.setView(config.view);
+        let wms = new WmsMap(12,'map','EPSG:4326');
+        wms.map.addLayer(wms.init());
+        wms.map.setView(wms.view);
+        currentCoords = createOverlay();
+        wms.map.addOverlay(currentCoords);
+        eventsOpenLayers(wms.map,currentCoords);
     }
 
     function stamen(){
-        let stamenMaps = new stamenMap();
-        config.map.addLayer(stamenMaps.init('watercolor'));
-        config.map.addLayer(config.view);
+        let stamenMaps = new StamenMap(12,'map','EPSG:4326');
+        stamenMaps.map.addLayer(stamenMaps.init('watercolor'));
+        stamenMaps.map.addLayer(stamenMaps.view);
     }
 
-if (location.hash === '') openStreet(map);
+
 
 window.addEventListener('hashchange',hashDetected,false);
+document.querySelector('.closer').addEventListener('click',clickEvent,false);
 document.addEventListener('DOMContentLoaded',hashDetected,false);
 
 function hashDetected(e){
-
+    document.querySelector('.map').innerHTML = '';
     let hash = window.location.hash;
-    
-    let canvas = document.querySelector('.ol-unselectable');
-    let ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    if (hash === '#bing'){
-        clearActive(hash);
-        bing();
+    canvas = document.querySelector('.ol-unselectable');
+    if (canvas) {
+        ctx = canvas.getContext('2d');
+        ctx.clearRect(0,0,canvas.width,canvas.height);
     }
+    switch(hash){
 
-    if (hash === '#' || hash === ''){
-        clearActive('#');
-        openStreet();
+        case '#bing': {
+            clearActive(hash);
+            bing();
+            break;
+        }
+        case '#xyz': {
+            clearActive(hash);
+            xyz();
+            break;
+        }
+        case '#arcgis': {
+            clearActive(hash);
+            arcGIS();
+            break;
+        }
+        case '#wms': {
+            clearActive(hash);
+            wms();
+            break;
+        }
+        default: {
+
+            clearActive('#');
+            openStreet();
+        }
     }
-
-    if (hash === '#xyz'){
-        clearActive(hash);
-        xyz();
-    }
-
-    if (hash === '#arcgis'){
-        clearActive(hash);
-        arcGIS();
-    }
-
-    if(hash === '#wms'){
-
-        clearActive(hash);
-        wms();
-    }
-
-    // if(hash === '#stamen'){
-
-    //     clearActive(hash);
-    //     stamen();
-    // }
 }
+
+function clickEvent(e){
+
+    let target = e.target;
+    
+    if (target.classList[0] === 'closer' && !target.classList[1])
+    target.parentElement.classList.toggle('hide');
+}
+
+    function eventsOpenLayers(map,currentCoords){
+
+        map.on('singleclick', function(e) {
+
+            let closer = document.querySelector('.closer').parentElement;
+            if(closer.classList[1] === 'hide') closer.classList.toggle('hide');
+
+            let coordinate = e.coordinate;
+            let hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
+                coordinate, 'EPSG:3857', 'EPSG:4326'));
+            document.querySelector('.popup-content')
+            .innerHTML = '<p class ="popup-about">You clicked here:</p><code>' + hdms + '</code>';
+
+            currentCoords.setPosition(coordinate);
+        },false);
+    }
 
 
 function clearActive(hash){
@@ -108,4 +150,30 @@ function clearActive(hash){
     active.classList.toggle('active');
     unactive.classList.toggle('active');
 
+}
+
+
+function createOverlay(item = document.querySelector('.hereCord')){
+    if (!item) {
+ 
+        let hereCords = document.createElement('div')
+        let closer = document.createElement('input');
+        let content = document.createElement('div')
+
+        content.classList.add('popup-content');
+        hereCords.classList.add('hereCord');
+        closer.classList.add('closer');
+        closer.setAttribute('type','button');
+        closer.setAttribute('value','X');
+        hereCords.addEventListener('click',clickEvent,false);
+        hereCords.appendChild(closer);
+        hereCords.appendChild(content);
+
+        document.querySelector('.custom-controll').appendChild(hereCords);
+
+        item = document.querySelector('.hereCord');
+    }
+    return new ol.Overlay({
+        element: item
+    });
 }

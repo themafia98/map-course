@@ -29,14 +29,9 @@ body {
 
 .connect .navigator{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
-.connect .navigator:after {
 
-    content: '';
-    display: table;
-    height: 50px;
-}
 .connect .navigator__item{
 
     list-style-type: none;
@@ -52,5 +47,48 @@ body {
 }
 
 .connect .navigator__item .active {
+    color: red;
+}
+
+.ol-mouse-position {
+    background-color: lightblue;
+    border-radius: 4px;
+    color: black;
+    padding: 1px 5px;
+}
+
+.ol-scale-line{
+    left: 45%;
+}
+
+.popup-content{
+
+    background-color: white;
+    padding: 15px;
+}
+
+.closer {
+
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: red;
+    font-weight: bold;
+    color: yellow;
+    text-align: center;
+    margin: 3px;
+    cursor: pointer;
+}
+
+.hide {
+
+    display: none;
+}
+
+.popup-about{
+    text-align: center;
+    font-weight: bold;
     color: red;
 }
