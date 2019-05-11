@@ -1,0 +1,20 @@
+{
+  "name": "map-course",
+  "version": "1.0.0",
+  "description": "Research open-soruce library \"Open layers\"\r ***\r Pavel P",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "surge ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/themafia98/map-course.git"
+  },
+  "author": "Pavel P",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/themafia98/map-course/issues"
+  },
+  "homepage": "https://kindhearted-army.surge.sh"
+}
