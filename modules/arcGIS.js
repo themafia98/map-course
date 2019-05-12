@@ -23,6 +23,8 @@ export default class ArcGIS{
             center: ol.proj.fromLonLat([x,y]),
             zoom: scale
         });
+
+        this.isEvents = true;
     }
 
     init(mapServer){
@@ -33,55 +35,59 @@ export default class ArcGIS{
         });
     }
 
-    swipe(map,canvas){
+    swipe(canvas,map){
 
         let currentMousePosition = [0, 0];
-        canvas.on('pointermove', function (e) {
-            // запоминаем положение мыши при движении курсора над картой
-            currentMousePosition = e.pixel;
-            // необходимо вызывать принудительную отрисовку карты, иначе эффекты не будут обновляться
-            canvas.render();
-        });
 
-           // обработка события перед отрисовкой слоя
-        map.on('precompose', function(event) {
-        let ctx = event.context;
+        map.addEventListener('pointermove',pointMove,false);
+         // обработка события перед отрисовкой слоя
+        canvas.addEventListener('precompose',preCompose,false);
+        // сразу после отрисовки слоя возвращаем область отрисовки в начальную форму
+        map.addEventListener('postcompose',postCompose,false);
 
-        let x = currentMousePosition[0];
-        let y = currentMousePosition[1];
+    function pointMove(e) {
+        // запоминаем положение мыши при движении курсора над картой
+        currentMousePosition = e.pixel;
+        console.log(currentMousePosition);
+        // необходимо вызывать принудительную отрисовку карты, иначе эффекты не будут обновляться
+        map.render();
+    }
+    function postCompose(event){
 
-
-        // ctx.save();
-        // ctx.beginPath();
-        // // область просмотра - окружность с радиусом 100
-        // ctx.arc(x, y, 100, 0, 2 * Math.PI);
-        // // устанавливаем белую границу
-        // ctx.lineWidth = 6;
-        // ctx.strokeStyle = 'rgba(255,255,255,0.75)';
-        // ctx.stroke();
-        // ctx.clip();
-
-
-        // отображаем квадрат 100х100 с центром в текущих координатах мыши        
-        // ctx.save();
-        // ctx.beginPath();
-        // ctx.rect(x - 100, y - 100, 200, 200);
-        // ctx.clip();
-
-
-
-        // // ограничиваем область по вертикали от левого края до указателя мыши
-        // ctx.save();
-        // ctx.beginPath();
-        // ctx.rect(0, 0, currentMousePosition[0], ctx.canvas.height);
-        // ctx.clip();
-    });
-
-    // сразу после отрисовки слоя возвращаем область отрисовки в начальную форму
-        map.on('postcompose', function(event) {
         let ctx = event.context;
         ctx.restore();
-    });
+    }
+
+    function preCompose(event){
+
+        let ctx = event.context;
+
+        ctx.save();
+        ctx.beginPath();
+         // область просмотра - окружность с радиусом 100
+        ctx.arc(currentMousePosition[0], currentMousePosition[1], 100, 0, 2 * Math.PI);
+        // устанавливаем белую границу
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+        ctx.stroke();
+        ctx.clip();
+        }
+
+    map.addEventListener('dblclick', (e) => {
+
+        if (this.isEvents){
+            map.removeEventListener('pointermove',pointMove,false);
+            canvas.removeEventListener('precompose',preCompose,false);
+            map.removeEventListener('postcompose',postCompose,false);
+            this.isEvents = false;
+        } else {
+            map.addEventListener('pointermove',pointMove,false);
+           canvas.addEventListener('precompose',preCompose,false);
+           map.addEventListener('postcompose',postCompose,false);
+           this.isEvents = true;
+        }
+
+    },false);
     }
 }
 

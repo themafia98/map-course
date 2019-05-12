@@ -5,83 +5,131 @@
 /* -------------------Pavel Petrovich------------------- */
 /*------------------------------------------------------*/
 
-
 import OpenStreetMap from './modules/openStreetMap.js';
 import BingMap from './modules/bingMap.js';
 import XyzMap from './modules/xyz.js';
 import Arc from './modules/arcGIS.js';
 import WmsMap from './modules/wms.js';
-import StamenMap from './modules/stamen.js';
 
 
 /* ---INIT--- */
+let mapCtx = null; // map context
+let currentCoords = null; // save coords
+let isEventsLoop = document.querySelector('.loop');
+let isEventsRect = document.querySelector('.rect');
+
+let hepBasic = document.querySelector('.basicMap');
+
+let canvas = document.querySelector('.ol-unselectable'); // cav
 let ctx = null;
-let currentCoords = null;
-let canvas = null;
+let heatmapLyaer = null;
+
+let currentMap = null;
+
+
 
     function openStreet(){
+
+        hepBasic.checked = true;
         let streetMap = new OpenStreetMap(12,'map','EPSG:4326');
-        streetMap.map.addLayer(streetMap.init());
+        mapCtx = streetMap.init();
+        streetMap.map.addLayer(mapCtx);
         streetMap.map.setView(streetMap.view);
         currentCoords = createOverlay();
         streetMap.map.addOverlay(currentCoords);
         eventsOpenLayers(streetMap.map,currentCoords);
+        swipe(mapCtx,streetMap.map);
+
+
+        currentMap = streetMap;
     }
 
     function bing(){
+
+        hepBasic.checked = true;
         let bing = new BingMap(12,'map','EPSG:4326');
-        bing.map.addLayer(bing.init());
+        mapCtx = bing.init();
+        bing.map.addLayer(mapCtx);
         bing.map.setView(bing.view);
         currentCoords = createOverlay();
         bing.map.addOverlay(currentCoords);
         eventsOpenLayers(bing.map,currentCoords);
+        swipe(mapCtx,bing.map);
+
+        currentMap = bing;
     }
 
     function xyz(){
+
+        hepBasic.checked = true;
         let xyz = new XyzMap(12,'map','EPSG:4326');
-        xyz.map.addLayer(xyz.init());
+        mapCtx = xyz.init();
+        xyz.map.addLayer(mapCtx);
         xyz.map.setView(xyz.view);
         currentCoords = createOverlay();
         xyz.map.addOverlay(currentCoords);
         eventsOpenLayers(xyz.map,currentCoords);
+        swipe(mapCtx,xyz.map);
+
+        currentMap = xyz;
     }
 
     function arcGIS(map = '/NatGeo_World_Map/MapServer'){
+
+        hepBasic.checked = true;
         let arcGis = new Arc(12,'map','EPSG:4326');
         let mapCtx = arcGis.init(map);
         arcGis.map.addLayer(mapCtx);
         arcGis.map.setView(arcGis.view);
         currentCoords = createOverlay();
         arcGis.map.addOverlay(currentCoords);
+
+
         eventsOpenLayers(arcGis.map,currentCoords);
-        arcGis.swipe(mapCtx,arcGis.map);
+        swipe(mapCtx,arcGis.map);
+
+        currentMap = arcGis;
     }
 
     function wms(){
+
+        hepBasic.checked = true;
         let wms = new WmsMap(12,'map','EPSG:4326');
-        wms.map.addLayer(wms.init());
+        mapCtx = wms.init();
+        wms.map.addLayer(mapCtx);
         wms.map.setView(wms.view);
         currentCoords = createOverlay();
         wms.map.addOverlay(currentCoords);
         eventsOpenLayers(wms.map,currentCoords);
-    }
+        swipe(mapCtx,wms.map);
 
-    function stamen(){
-        let stamenMaps = new StamenMap(12,'map','EPSG:4326');
-        stamenMaps.map.addLayer(stamenMaps.init('watercolor'));
-        stamenMaps.map.addLayer(stamenMaps.view);
+        currentMap = wms;
     }
 
 
 
 window.addEventListener('hashchange',hashDetected,false);
+
+document.addEventListener('click',(e) => {
+    
+    if (e.target.dataset.type === 'on' && e.target.checked){
+
+        heatmap('cities.json',currentMap.map);
+    } else if (e.target.dataset.type === 'off' && e.target.checked){
+        
+        let layers = currentMap.map.getLayers();
+        
+        currentMap.map.removeLayer(heatmapLyaer);
+    }
+
+},false);
+
 document.querySelector('.closer').addEventListener('click',clickEvent,false);
 document.addEventListener('DOMContentLoaded',hashDetected,false);
 
 function hashDetected(e){
     document.querySelector('.map').innerHTML = '';
     let hash = window.location.hash;
-    canvas = document.querySelector('.ol-unselectable');
     if (canvas) {
         ctx = canvas.getContext('2d');
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -176,4 +224,63 @@ function createOverlay(item = document.querySelector('.hereCord')){
     return new ol.Overlay({
         element: item
     });
+}
+
+
+function swipe(canvas,map){
+    let currentMousePosition = [0, 0];
+
+
+        map.addEventListener('pointermove',pointMove,false);
+        // обработка события перед отрисовкой слоя
+        canvas.addEventListener('precompose',preCompose,false);
+        // сразу после отрисовки слоя возвращаем область отрисовки в начальную форму
+        map.addEventListener('postcompose',postCompose,false);
+
+    function pointMove(e) {
+        // запоминаем положение мыши при движении курсора над картой
+        currentMousePosition = e.pixel;
+        // необходимо вызывать принудительную отрисовку карты, иначе эффекты не будут обновляться
+        map.render();
+        }
+        function postCompose(event){
+        let ctx = event.context;
+        ctx.restore();
+    }
+
+function preCompose(event){
+
+    let ctx = event.context;
+    if (isEventsLoop.checked){
+        ctx.save();
+        ctx.beginPath();
+        // область просмотра - окружность с радиусом 100
+        ctx.arc(currentMousePosition[0], currentMousePosition[1], 100, 0, 2 * Math.PI);
+        // устанавливаем белую границу
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+        ctx.stroke();
+        ctx.clip();
+    } else if (isEventsRect.checked){
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(currentMousePosition[0]-100,currentMousePosition[1]-100,200,200);
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+        ctx.stroke();
+        ctx.clip();
+    }
+    }
+}
+
+function heatmap(file,map){ // теплокарта количества населения по городам
+
+    heatmapLyaer = new ol.layer.Heatmap({
+        source: new ol.source.Vector({
+            url: file,
+            format: new ol.format.GeoJSON()
+        })
+    });
+    map.addLayer(heatmapLyaer);
 }

@@ -26,12 +26,23 @@
                     <li class="navigator__item"><a href="#wms">WMS</a></li>
                     <!-- <li class="navigator__item"><a href="#stamen">Stamen</a></li> -->
                     </ul>
+                    <div class="controllers">
+                        <div class="canvasControllers">
+                        <input name="loopType" class="loop" type="radio"> Loop
+                        <input name="loopType" class="rect" type="radio"> Rect
+                        <input name="loopType" checked class="basic" type="radio"> Basic
+                        </div>
+                        <div class="mapControllers">
+                                <input data-type ='on' name="mapControllers" class="heatmap" type="radio"> Include heatmap
+                                <input data-type ='off' name="mapControllers" checked class="basicMap" type="radio"> Basic map
+                        </div>
+                    </div>
                 </nav>
 
                 <div id ='map' class="map"></div>
                 <div class='custom-controll' style="display: none;">
                         <div class="hereCord">
-                                <input type="button" class="closer">
+                                <input type="button" class="closer" value ='X'>
                                 <div class="popup-content"></div>
                               </div>
 

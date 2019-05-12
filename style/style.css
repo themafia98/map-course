@@ -30,6 +30,7 @@ body {
 .connect .navigator{
     display: flex;
     justify-content: space-evenly;
+    border-bottom: 1px solid black;
 }
 
 .connect .navigator__item{
@@ -91,4 +92,9 @@ body {
     text-align: center;
     font-weight: bold;
     color: red;
+}
+
+.controllers{
+    display: flex;
+    justify-content: space-around;
 }
