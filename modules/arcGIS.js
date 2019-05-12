@@ -34,61 +34,6 @@ export default class ArcGIS{
             })
         });
     }
-
-    swipe(canvas,map){
-
-        let currentMousePosition = [0, 0];
-
-        map.addEventListener('pointermove',pointMove,false);
-         // обработка события перед отрисовкой слоя
-        canvas.addEventListener('precompose',preCompose,false);
-        // сразу после отрисовки слоя возвращаем область отрисовки в начальную форму
-        map.addEventListener('postcompose',postCompose,false);
-
-    function pointMove(e) {
-        // запоминаем положение мыши при движении курсора над картой
-        currentMousePosition = e.pixel;
-        console.log(currentMousePosition);
-        // необходимо вызывать принудительную отрисовку карты, иначе эффекты не будут обновляться
-        map.render();
-    }
-    function postCompose(event){
-
-        let ctx = event.context;
-        ctx.restore();
-    }
-
-    function preCompose(event){
-
-        let ctx = event.context;
-
-        ctx.save();
-        ctx.beginPath();
-         // область просмотра - окружность с радиусом 100
-        ctx.arc(currentMousePosition[0], currentMousePosition[1], 100, 0, 2 * Math.PI);
-        // устанавливаем белую границу
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
-        ctx.stroke();
-        ctx.clip();
-        }
-
-    map.addEventListener('dblclick', (e) => {
-
-        if (this.isEvents){
-            map.removeEventListener('pointermove',pointMove,false);
-            canvas.removeEventListener('precompose',preCompose,false);
-            map.removeEventListener('postcompose',postCompose,false);
-            this.isEvents = false;
-        } else {
-            map.addEventListener('pointermove',pointMove,false);
-           canvas.addEventListener('precompose',preCompose,false);
-           map.addEventListener('postcompose',postCompose,false);
-           this.isEvents = true;
-        }
-
-    },false);
-    }
 }
 
 /*

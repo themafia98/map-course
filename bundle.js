@@ -183,7 +183,8 @@ function clickEvent(e){
             let hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
                 coordinate, 'EPSG:3857', 'EPSG:4326'));
             document.querySelector('.popup-content')
-            .innerHTML = '<p class ="popup-about">You clicked here:</p><code>' + hdms + '</code>';
+            .innerHTML = '<p class ="popup-about">You clicked here:</p><code>' +
+                        hdms + '</code>';
 
             currentCoords.setPosition(coordinate);
         },false);
