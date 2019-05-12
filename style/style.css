@@ -31,6 +31,7 @@ body {
     display: flex;
     justify-content: space-evenly;
     border-bottom: 1px solid black;
+    padding: 0;
 }
 
 .connect .navigator__item{
@@ -71,8 +72,6 @@ body {
 .closer {
 
     position: absolute;
-    width: 25px;
-    height: 25px;
     border: 1px solid black;
     border-radius: 10px;
     background-color: red;
@@ -97,4 +96,14 @@ body {
 .controllers{
     display: flex;
     justify-content: space-around;
+}
+
+@media screen and (max-width: 700px){
+    .ol-zoomslider {
+       display: none;
+    }
+
+    .mapControllers, .canvasControllers{
+        display: flex;
+    }
 }

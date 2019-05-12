@@ -1,7 +1,6 @@
 export default class Wms{
 
     constructor(scale,target,projection,x = 27.56659, y = 53.9){
-        this.urlServer = 'http://129.206.228.72/cached/';
         this.map = new ol.Map({
             controls: ol.control.defaults().extend([
                 new ol.control.ZoomSlider(),
@@ -25,10 +24,10 @@ export default class Wms{
         });
     }
 
-    init(layer = 'osm', params = {'LAYERS': 'osm_auto:all'}){
+    init(layer = 'osm', params = {'LAYERS': 'osm_auto:all'},urlServer = 'http://129.206.228.72/cached/'){
         return new ol.layer.Tile({
                 source: new ol.source.TileWMS({
-                url: this.urlServer + layer,
+                url: urlServer + layer,
                 params: params,
                 })
         });

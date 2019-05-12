@@ -28,9 +28,9 @@
                     </ul>
                     <div class="controllers">
                         <div class="canvasControllers">
-                        <input name="loopType" class="loop" type="radio"> Loop
-                        <input name="loopType" class="rect" type="radio"> Rect
-                        <input name="loopType" checked class="basic" type="radio"> Basic
+                        <input name="loopType" class="loop" type="radio"> <label>Loop</label>
+                        <input name="loopType" class="rect" type="radio"> <label>Rect</label>
+                        <input name="loopType" checked class="basic" type="radio"> <label>Basic</label>
                         </div>
                         <div class="mapControllers">
                                 <input data-type ='on' name="mapControllers" class="heatmap" type="radio"> Include heatmap
@@ -40,13 +40,14 @@
                 </nav>
 
                 <div id ='map' class="map"></div>
+
                 <div class='custom-controll' style="display: none;">
                         <div class="hereCord">
                                 <input type="button" class="closer" value ='X'>
                                 <div class="popup-content"></div>
-                              </div>
+                        </div>
+                </div>
 
-                    </div>
         </div>
     </section>
 <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>

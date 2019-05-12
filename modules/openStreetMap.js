@@ -13,7 +13,7 @@ export default class OpenStreetMap{
                     projection: projection,
                     // переопределяем функцию вывода координат
                     coordinateFormat: coordinate => {
-                        // сначала широта, потом долгота и ограничиваем до 5 знаков после запятой
+                        // ограничиваем до 5 знаков после запятой
                         return ol.coordinate.format(coordinate, '{y}, {x}', 5);
                     }
                 })

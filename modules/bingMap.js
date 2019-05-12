@@ -2,7 +2,7 @@
 export default class BingMap{
 
     constructor(scale,target,projection,x = 27.56659, y = 53.9){
-        this.key = 'AkPePzQAUoC7qKlVTNT4nw0Ykq2EJ4nLE9Iq8-7NZY4wI2Owxebqqur_4zMiboZh';
+        this.key = 'AjU6I-HYoV1NTQEERQs6cENf3ts6xdSUXcq5-iWdjR4CSJQuxgiglKTxuzVyhfZH';
         this.map = new ol.Map({
             controls: ol.control.defaults().extend([
                 new ol.control.ZoomSlider(),

@@ -14,6 +14,7 @@ import WmsMap from './modules/wms.js';
 
 /* ---INIT--- */
 let mapCtx = null; // map context
+let mapCtx2 = null;
 let currentCoords = null; // save coords
 let isEventsLoop = document.querySelector('.loop');
 let isEventsRect = document.querySelector('.rect');
@@ -26,20 +27,19 @@ let heatmapLyaer = null;
 
 let currentMap = null;
 
-
-
     function openStreet(){
 
         hepBasic.checked = true;
         let streetMap = new OpenStreetMap(12,'map','EPSG:4326');
         mapCtx = streetMap.init();
+        mapCtx2 = new Arc().init('/World_Shaded_Relief/MapServer');
+        streetMap.map.addLayer(mapCtx2);
         streetMap.map.addLayer(mapCtx);
         streetMap.map.setView(streetMap.view);
         currentCoords = createOverlay();
         streetMap.map.addOverlay(currentCoords);
         eventsOpenLayers(streetMap.map,currentCoords);
         swipe(mapCtx,streetMap.map);
-
 
         currentMap = streetMap;
     }
@@ -49,6 +49,12 @@ let currentMap = null;
         hepBasic.checked = true;
         let bing = new BingMap(12,'map','EPSG:4326');
         mapCtx = bing.init();
+        mapCtx2 = new ol.layer.Tile({
+            source: new ol.source.Stamen({
+                layer: 'watercolor'
+            })
+        });
+        bing.map.addLayer(mapCtx2);
         bing.map.addLayer(mapCtx);
         bing.map.setView(bing.view);
         currentCoords = createOverlay();
@@ -64,6 +70,8 @@ let currentMap = null;
         hepBasic.checked = true;
         let xyz = new XyzMap(12,'map','EPSG:4326');
         mapCtx = xyz.init();
+        mapCtx2 = new Arc().init('/World_Imagery/MapServer'); // слой 2
+        xyz.map.addLayer(mapCtx2);
         xyz.map.addLayer(mapCtx);
         xyz.map.setView(xyz.view);
         currentCoords = createOverlay();
@@ -78,7 +86,9 @@ let currentMap = null;
 
         hepBasic.checked = true;
         let arcGis = new Arc(12,'map','EPSG:4326');
-        let mapCtx = arcGis.init(map);
+        mapCtx = arcGis.init(map); // слой 1
+        mapCtx2 = arcGis.init('/World_Topo_Map/MapServer'); // слой 2
+        arcGis.map.addLayer(mapCtx2);
         arcGis.map.addLayer(mapCtx);
         arcGis.map.setView(arcGis.view);
         currentCoords = createOverlay();
@@ -96,6 +106,9 @@ let currentMap = null;
         hepBasic.checked = true;
         let wms = new WmsMap(12,'map','EPSG:4326');
         mapCtx = wms.init();
+        mapCtx2 = wms.init('',{'LAYERS': 'ne:ne', 'TILED': true},
+                                'https://ahocevar.com/geoserver/wms'); // слой 2
+        wms.map.addLayer(mapCtx2);
         wms.map.addLayer(mapCtx);
         wms.map.setView(wms.view);
         currentCoords = createOverlay();
@@ -130,10 +143,10 @@ document.addEventListener('DOMContentLoaded',hashDetected,false);
 function hashDetected(e){
     document.querySelector('.map').innerHTML = '';
     let hash = window.location.hash;
-    if (canvas) {
-        ctx = canvas.getContext('2d');
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-    }
+    // if (canvas) {
+    //     ctx = canvas.getContext('2d');
+    //     ctx.clearRect(0,0,canvas.width,canvas.height);
+    // }
     switch(hash){
 
         case '#bing': {
@@ -231,11 +244,9 @@ function createOverlay(item = document.querySelector('.hereCord')){
 function swipe(canvas,map){
     let currentMousePosition = [0, 0];
 
-
-        map.addEventListener('pointermove',pointMove,false);
         // обработка события перед отрисовкой слоя
+        map.addEventListener('pointermove',pointMove,false);
         canvas.addEventListener('precompose',preCompose,false);
-        // сразу после отрисовки слоя возвращаем область отрисовки в начальную форму
         map.addEventListener('postcompose',postCompose,false);
 
     function pointMove(e) {
@@ -255,9 +266,7 @@ function preCompose(event){
     if (isEventsLoop.checked){
         ctx.save();
         ctx.beginPath();
-        // область просмотра - окружность с радиусом 100
         ctx.arc(currentMousePosition[0], currentMousePosition[1], 100, 0, 2 * Math.PI);
-        // устанавливаем белую границу
         ctx.lineWidth = 6;
         ctx.strokeStyle = 'rgba(255,255,255,0.75)';
         ctx.stroke();
