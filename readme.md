@@ -1,6 +1,6 @@
 # My course project
 
 
-Research open-source library ["Open layers"](https://github.com/openlayers/openlayers)
+Research open-source javascript library ["Open layers"](https://github.com/openlayers/openlayers)
 ***
 Pavel P
