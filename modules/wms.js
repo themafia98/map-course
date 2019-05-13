@@ -5,11 +5,9 @@ export default class Wms{
             controls: ol.control.defaults().extend([
                 new ol.control.ZoomSlider(),
                 new ol.control.MousePosition({
-                    // используется градусная проекция
+                    // use coords projection
                     projection: projection,
-                    // переопределяем функцию вывода координат
                     coordinateFormat: coordinate => {
-                        // сначала широта, потом долгота и ограничиваем до 5 знаков после запятой
                         return ol.coordinate.format(coordinate, '{y}, {x}', 5);
                     }
                 }),
@@ -35,8 +33,8 @@ export default class Wms{
 }
 
 /*
-* ol.control.ZoomSlider отображает полоску масштабов с указанием текущего уровня
-* ol.control.MousePosition показывает координаты текущего положения мыши
-* ol.control.OverviewMap показывает уменьшенную обзорную карту
-* ol.control.ScaleLine отображает текущий масштаб
+* ol.control.ZoomSlider scale
+* ol.control.MousePosition  mouse coords on canvas
+* ol.control.OverviewMap mini map
+* ol.control.ScaleLine current scale
 */

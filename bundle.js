@@ -93,8 +93,6 @@ let currentMap = null;
         arcGis.map.setView(arcGis.view);
         currentCoords = createOverlay();
         arcGis.map.addOverlay(currentCoords);
-
-
         eventsOpenLayers(arcGis.map,currentCoords);
         swipe(mapCtx,arcGis.map);
 

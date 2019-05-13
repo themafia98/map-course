@@ -9,11 +9,8 @@ export default class OpenStreetMap{
                 new ol.control.OverviewMap(),
                 new ol.control.ScaleLine(),
                 new ol.control.MousePosition({
-                    // используется градусная проекция
                     projection: projection,
-                    // переопределяем функцию вывода координат
                     coordinateFormat: coordinate => {
-                        // ограничиваем до 5 знаков после запятой
                         return ol.coordinate.format(coordinate, '{y}, {x}', 5);
                     }
                 })
@@ -34,8 +31,8 @@ export default class OpenStreetMap{
 }
 
 /*
-* ol.control.ZoomSlider отображает полоску масштабов с указанием текущего уровня
-* ol.control.MousePosition показывает координаты текущего положения мыши
-* ol.control.OverviewMap показывает уменьшенную обзорную карту
-* ol.control.ScaleLine отображает текущий масштаб
+* ol.control.ZoomSlider scale
+* ol.control.MousePosition  mouse coords on canvas
+* ol.control.OverviewMap mini map
+* ol.control.ScaleLine current scale
 */
