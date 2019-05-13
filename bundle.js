@@ -284,7 +284,7 @@ function preCompose(event){
     }
 }
 
-function heatmap(file,map){ // теплокарта количества населения по городам
+function heatmap(file,map){ // теплокарта
 
     heatmapLyaer = new ol.layer.Heatmap({
         source: new ol.source.Vector({
