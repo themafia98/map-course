@@ -1,4 +1,3 @@
-
 export default class OpenStreetMap{
 
     constructor(scale,target,projection,x = 27.56659, y = 53.9){
@@ -24,9 +23,9 @@ export default class OpenStreetMap{
     };
 
     init(layer = new ol.source.OSM()) {
-    return new ol.layer.Tile({
-        source: layer
-    });
+        return new ol.layer.Tile({
+            source: layer
+        });
     }
 }
 

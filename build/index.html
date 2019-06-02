@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="/style/style.css">
+    
+    <title>Course project</title>
+<link href="./style/style.css?8f41730dbd62c4c45a01" rel="stylesheet"></head>
+<body>
+
+    <header>
+        <h1 class="title">Course project</h1>
+    </header>
+    <section>
+        <div class ='connect'>
+            <div class="connect__wrapper">
+                <nav>
+                    <ul class="navigator">
+                    <li class="navigator__item"><a class="active" href="#">OpenStreetMap</a></li>
+                    <li class="navigator__item"><a href="#bing">Bing</a></li>
+                    <li class="navigator__item"><a href="#xyz">XYZ</a></li>
+                    <li class="navigator__item"><a href="#arcgis">ArcGIS</a></li>
+                    <li class="navigator__item"><a href="#wms">WMS</a></li>
+                    <!-- <li class="navigator__item"><a href="#stamen">Stamen</a></li> -->
+                    </ul>
+                    <div class="controllers">
+                        <div class="canvasControllers">
+                        <input name="loopType" class="loop" type="radio"> <label>Loop</label>
+                        <input name="loopType" class="rect" type="radio"> <label>Rect</label>
+                        <input name="loopType" checked class="basic" type="radio"> <label>Basic</label>
+                        </div>
+                        <div class="mapControllers">
+                                <input data-type ='on' name="mapControllers" class="heatmap" type="radio"> Include heatmap
+                                <input data-type ='off' name="mapControllers" checked class="basicMap" type="radio"> Basic map
+                        </div>
+                    </div>
+                </nav>
+
+                <div id ='map' class="map"></div>
+
+                <div class='custom-controll' style="display: none;">
+                        <div class="hereCord">
+                                <input type="button" class="closer" value ='X'>
+                                <div class="popup-content"></div>
+                        </div>
+                </div>
+
+        </div>
+    </section>
+<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList"></script>
+
+<script src="js/bundle.js" type="module"></script>
+<script type="text/javascript" src="./js/bundle.js?8f41730dbd62c4c45a01"></script></body>
+</html>
