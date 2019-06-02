@@ -16,7 +16,7 @@ const config = {
         path: path.resolve(__dirname, 'build'),
         filename: './js/bundle.js'
     },
-
+    devtool: "source-map",
     watch: true,
     optimization: {
         minimizer: [
@@ -98,10 +98,10 @@ if (!prod) {
         }]),
 
         // new webpack.HotModuleReplacementPlugin(),
-        new webpack.SourceMapDevToolPlugin({
-            filename: 'bundle.js.map',
-            append: '\n//# sourceMappingURL=http://localhost:9001/[url]',
-        }),
+        // new webpack.SourceMapDevToolPlugin({
+        //     filename: 'bundle.js.map',
+        //     append: '\n//# sourceMappingURL=http://localhost:9001/[url]',
+        // }),
         new HtmlWebpackPlugin({hash: true,filename:'./index.html',template: 'src/index.html'}),
         new MiniCssExtractPlugin({filename: './style/style.css', disable: false, allChunks: true}), // main css
         new webpack.DefinePlugin({
